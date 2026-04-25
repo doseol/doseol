@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>성리학 도설 아카이브</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F2F0EB;
+  --bg3: #E8E5DD;
+  --text: #1A1916;
+  --text2: #5A5751;
+  --text3: #9A9590;
+  --border: #D8D4CC;
+  --border2: #C4BFB5;
+  --accent: #3B3460;
+  --accent-light: #EEEDFE;
+  --serif: 'Noto Serif KR', serif;
+  --sans: 'Noto Sans KR', sans-serif;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Layout */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 0;
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-kr { font-family: var(--serif); font-size: 17px; font-weight: 700; color: var(--text); }
+.logo-en { font-size: 11px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 300; }
+.search-wrap { flex: 1; max-width: 420px; position: relative; }
+.search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+#search {
+  width: 100%;
+  padding: 9px 12px 9px 38px;
+  font-family: var(--sans);
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+#search:focus { border-color: var(--accent); }
+#search::placeholder { color: var(--text3); }
+.header-count { font-size: 12px; color: var(--text3); white-space: nowrap; }
+
+/* Main */
+.main { padding: 2rem 0 4rem; }
+.layout { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; align-items: start; }
+
+/* Sidebar */
+.sidebar { position: sticky; top: 80px; }
+.sidebar-section { margin-bottom: 1.5rem; }
+.sidebar-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); font-weight: 500; margin-bottom: 8px; }
+.filter-list { display: flex; flex-direction: column; gap: 2px; }
+.filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  width: 100%;
+  text-align: left;
+  transition: background .15s, color .15s;
+}
+.filter-btn:hover { background: var(--bg2); color: var(--text); }
+.filter-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+.filter-count { font-size: 11px; color: var(--text3); background: var(--bg2); padding: 1px 6px; border-radius: 10px; }
+.filter-btn.active .filter-count { background: white; color: var(--accent); }
+.divider { height: 1px; background: var(--border); margin: 1rem 0; }
+
+/* Grid */
+.cards-area {}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.2rem;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.card:hover { border-color: var(--border2); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.card.active { border-color: var(--accent); border-width: 1.5px; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+.card-titles { flex: 1; }
+.card-name { font-family: var(--serif); font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.card-hanja { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.era-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.card-author { font-size: 12px; color: var(--text3); }
+.card-desc { font-size: 12px; color: var(--text2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.tag { font-size: 10px; padding: 2px 7px; border-radius: 8px; background: var(--bg2); color: var(--text3); }
+.soon-badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; background: #FEF3C7; color: #92400E; }
+
+/* Detail panel */
+.detail-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.detail-header {
+  padding: 1.4rem 1.5rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.detail-titles { flex: 1; }
+.detail-name { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.detail-hanja { font-size: 13px; color: var(--text3); margin-bottom: 10px; }
+.detail-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 10px; }
+.detail-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.detail-meta span { font-size: 12px; color: var(--text3); }
+.detail-meta strong { color: var(--text2); font-weight: 500; }
+.detail-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: var(--sans);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text2);
+  text-decoration: none;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg2); border-color: var(--border2); color: var(--text); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+.btn-primary:hover { opacity: .88; background: var(--accent); color: white; }
+.concepts-bar {
+  padding: .9rem 1.5rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.concept-chip {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.concept-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.concept-label { font-size: 11px; color: var(--text3); margin-right: 2px; }
+.diagram-area { padding: 1.5rem; }
+.diagram-area svg { width: 100%; height: auto; display: block; }
+.soon-area {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+}
+.soon-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.soon-title { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--text); }
+.soon-sub { font-size: 13px; color: var(--text2); line-height: 1.6; max-width: 340px; }
+.soon-concepts { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+
+/* Responsive */
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .filter-list { flex-direction: row; flex-wrap: wrap; }
+  .container { padding: 0 1rem; }
+  .site-header .container { flex-wrap: wrap; }
+  .header-count { display: none; }
+}
+
+/* SVG styles */
+.ds-node { cursor: pointer; }
+.ds-node rect, .ds-node circle { transition: opacity .15s; }
+.ds-node:hover rect, .ds-node:hover circle { opacity: .85; }
+@keyframes tgspin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spinning { transform-origin: 340px 148px; animation: tgspin 2s ease-in-out forwards; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="#">
+      <span class="logo-kr">성리학 도설 아카이브</span>
+      <span class="logo-en">Neo-Confucian Diagrams</span>
+    </a>
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="도설명, 저자, 개념어 검색…" oninput="render()">
+    </div>
+    <span class="header-count" id="hcount"></span>
+  </div>
+</header>
+
+<main class="main">
+  <div class="container">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">국가</div>
+          <div class="filter-list" id="filter-country"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">시대</div>
+          <div class="filter-list" id="filter-era"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">주제</div>
+          <div class="filter-list" id="filter-topic"></div>
+        </div>
+      </aside>
+
+      <div class="cards-area">
+        <div class="cards-grid" id="grid"></div>
+        <div id="detail"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const DOSEOL = [
+  {
+    id: 'taeguk',
+    title: '태극도설',
+    hanja: '太極圖說',
+    author: '주돈이 (周敦頤)',
+    era: '북송',
+    country: '중국',
+    year: '1017–1073',
+    desc: '무극에서 태극, 음양, 오행을 거쳐 만물이 생성되고 인간의 도덕 원리(인극)로 완성되는 우주 생성론. 성리학 우주론의 출발점.',
+    tags: ['태극', '음양', '오행', '인극', '무극'],
+    concepts: ['무극이태극', '음양', '오행', '건도성남', '곤도성녀', '만물화생', '인극', '성인', '주정(主靜)'],
+    topics: ['우주론', '존재론'],
+    era_color: '#534AB7', era_bg: '#EEEDFE',
+    status: 'done',
+  },
+  {
+    id: 'seonghak',
+    title: '성학십도',
+    hanja: '聖學十圖',
+    author: '이황 (李滉)',
+    era: '조선 중기',
+    country: '한국',
+    year: '1568',
+    desc: '선조에게 올린 10개의 도설. 태극도에서 출발해 경(敬)을 중심으로 성학의 전 과정을 체계화한 퇴계학의 결정.',
+    tags: ['경(敬)', '성학', '심학', '인(仁)', '태극'],
+    concepts: ['태극도', '서명도', '소학도', '대학도', '심통성정도', '인설도', '심학도', '경재잠도'],
+    topics: ['수양론', '심성론'],
+    era_color: '#0F6E56', era_bg: '#E1F5EE',
+    status: 'soon',
+  },
+  {
+    id: 'simdo',
+    title: '심통성정도',
+    hanja: '心統性情圖',
+    author: '이황 (李滉)',
+    era: '조선 중기',
+    country: '한국',
+    year: '1568',
+    desc: '마음(心)이 성(性)과 정(情)을 통괄하는 구조를 도식화. 사단칠정 논쟁의 핵심 도해로, 이발·기발의 문제를 시각적으로 정리.',
+    tags: ['심(心)', '성(性)', '정(情)', '사단', '칠정'],
+    concepts: ['심', '성', '정', '사단', '칠정', '이발', '기발'],
+    topics: ['심성론', '윤리학'],
+    era_color: '#993C1D', era_bg: '#FAECE7',
+    status: 'soon',
+  },
+  {
+    id: 'gewu',
+    title: '격물치지도',
+    hanja: '格物致知圖',
+    author: '주희 (朱熹)',
+    era: '남송',
+    country: '중국',
+    year: '1130–1200',
+    desc: '사물의 이치를 탐구하여(格物) 앎을 완성하는(致知) 과정을 도식으로 표현. 대학 팔조목에 기반한 주자학 인식론의 핵심.',
+    tags: ['격물', '치지', '이(理)', '궁리', '대학'],
+    concepts: ['격물', '치지', '성의', '정심', '수신', '이(理)', '기(氣)'],
+    topics: ['인식론', '수양론'],
+    era_color: '#185FA5', era_bg: '#E6F1FB',
+    status: 'soon',
+  },
+  {
+    id: 'igido',
+    title: '이기론 구조도',
+    hanja: '理氣論 構造圖',
+    author: '이이 (李珥)',
+    era: '조선 중기',
+    country: '한국',
+    year: '1536–1584',
+    desc: '이(理)와 기(氣)의 관계를 기발이승일도설로 정리한 율곡의 이기론. 이황과의 차이를 중심으로 조선 성리학의 분기점을 보여줌.',
+    tags: ['이(理)', '기(氣)', '이기론', '기발이승', '사단칠정'],
+    concepts: ['이(理)', '기(氣)', '이통기국', '기발이승', '사단', '칠정'],
+    topics: ['존재론', '심성론'],
+    era_color: '#854F0B', era_bg: '#FAEEDA',
+    status: 'soon',
+  },
+  {
+    id: 'ximing',
+    title: '서명도',
+    hanja: '西銘圖',
+    author: '장재 (張載)',
+    era: '북송',
+    country: '중국',
+    year: '1020–1077',
+    desc: '천지를 부모로, 만물을 동포로 여기는 민포물여 사상을 도식화. 우주적 공동체론의 출발점이자 성리학 윤리론의 초석.',
+    tags: ['천지', '민포물여', '인(仁)', '기(氣)', '태화'],
+    concepts: ['건(乾)', '곤(坤)', '민포물여', '태화', '기(氣)'],
+    topics: ['윤리학', '우주론'],
+    era_color: '#3B6D11', era_bg: '#EAF3DE',
+    status: 'soon',
+  },
+];
+
+const FILTERS = {
+  country: { label: '국가', key: 'country', values: ['전체', '중국', '한국'] },
+  era: { label: '시대', key: 'era', values: ['전체', '북송', '남송', '조선 중기'] },
+  topic: { label: '주제', key: 'topics', values: ['전체', '우주론', '존재론', '심성론', '수양론', '인식론', '윤리학'] },
+};
+
+const state = { country: '전체', era: '전체', topic: '전체', selected: 'taeguk' };
+
+function getFiltered() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  return DOSEOL.filter(d => {
+    if (state.country !== '전체' && d.country !== state.country) return false;
+    if (state.era !== '전체' && d.era !== state.era) return false;
+    if (state.topic !== '전체' && !d.topics.includes(state.topic)) return false;
+    if (!q) return true;
+    return d.title.includes(q) || d.hanja.includes(q) || d.author.includes(q) ||
+      d.tags.some(t => t.includes(q)) || d.concepts.some(c => c.includes(q)) || d.desc.includes(q);
+  });
+}
+
+function renderSidebar() {
+  const countryEl = document.getElementById('filter-country');
+  const eraEl = document.getElementById('filter-era');
+  const topicEl = document.getElementById('filter-topic');
+
+  const countFor = (key, val) => val === '전체' ? DOSEOL.length :
+    DOSEOL.filter(d => Array.isArray(d[key]) ? d[key].includes(val) : d[key] === val).length;
+
+  countryEl.innerHTML = FILTERS.country.values.map(v =>
+    `<button class="filter-btn${state.country===v?' active':''}" onclick="setFilter('country','${v}')">
+      ${v}<span class="filter-count">${countFor('country',v)}</span>
+    </button>`).join('');
+
+  eraEl.innerHTML = FILTERS.era.values.map(v =>
+    `<button class="filter-btn${state.era===v?' active':''}" onclick="setFilter('era','${v}')">
+      ${v}<span class="filter-count">${countFor('era',v)}</span>
+    </button>`).join('');
+
+  topicEl.innerHTML = FILTERS.topic.values.map(v =>
+    `<button class="filter-btn${state.topic===v?' active':''}" onclick="setFilter('topic','${v}')">
+      ${v}<span class="filter-count">${countFor('topics',v)}</span>
+    </button>`).join('');
+}
+
+function setFilter(type, val) { state[type] = val; render(); }
+
+function render() {
+  renderSidebar();
+  const list = getFiltered();
+  document.getElementById('hcount').textContent = `도설 ${list.length}개`;
+
+  const grid = document.getElementById('grid');
+  if (list.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3);font-size:14px">검색 결과가 없습니다</div>`;
+    document.getElementById('detail').innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = list.map(d => `
+    <div class="card${state.selected===d.id?' active':''}" onclick="select('${d.id}')">
+      <div class="card-top">
+        <div class="card-titles">
+          <div class="card-name">${d.title}</div>
+          <div class="card-hanja">${d.hanja}</div>
+        </div>
+        <span class="era-badge" style="background:${d.era_bg};color:${d.era_color}">${d.era}</span>
+      </div>
+      <div class="card-author">${d.author}</div>
+      <div class="card-desc">${d.desc}</div>
+      <div class="card-tags">
+        ${d.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}
+        ${d.status==='soon'?'<span class="soon-badge">준비중</span>':''}
+      </div>
+    </div>`).join('');
+
+  renderDetail();
+}
+
+function select(id) {
+  state.selected = id;
+  render();
+  setTimeout(() => document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'nearest'}), 60);
+}
+
+function renderDetail() {
+  const d = DOSEOL.find(x => x.id === state.selected);
+  if (!d) return;
+  const el = document.getElementById('detail');
+
+  const headerHtml = `
+    <div class="detail-header">
+      <div class="detail-titles">
+        <div class="detail-name">${d.title}</div>
+        <div class="detail-hanja">${d.hanja} · ${d.author} · ${d.country} ${d.era}</div>
+        <div class="detail-desc">${d.desc}</div>
+        <div class="detail-meta">
+          <span><strong>주제</strong> ${d.topics.join(', ')}</span>
+          <span><strong>연도</strong> ${d.year}</span>
+        </div>
+      </div>
+      <div class="detail-actions">
+        ${d.status==='done'
+          ? `<button class="btn btn-primary" onclick="askAbout('${d.title}')">개념 질문 ↗</button>`
+          : `<button class="btn btn-primary" onclick="askAbout('${d.title}')">설명 요청 ↗</button>`
+        }
+      </div>
+    </div>
+    <div class="concepts-bar">
+      <span class="concept-label">핵심 개념</span>
+      ${d.concepts.map(c=>`<span class="concept-chip" onclick="askConcept('${d.title}','${c}')">${c}</span>`).join('')}
+    </div>`;
+
+  if (d.status === 'soon') {
+    el.innerHTML = `<div class="detail-panel">${headerHtml}
+      <div class="soon-area">
+        <div class="soon-icon">◎</div>
+        <div class="soon-title">도설 시각화 준비중</div>
+        <div class="soon-sub">이 도설은 현재 현대적 재구성 작업 중입니다. 위의 개념 칩을 클릭하거나 설명 요청 버튼으로 내용을 먼저 확인하세요.</div>
+        <div class="soon-concepts">
+          ${d.concepts.slice(0,5).map(c=>`<span class="concept-chip" onclick="askConcept('${d.title}','${c}')">${c}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="detail-panel">${headerHtml}
+    <div class="diagram-area" id="diagram-svg"></div>
+  </div>`;
+
+  injectTaegukSvg();
+}
+
+function askAbout(title) {
+  alert(`브라우저 환경에서는 Claude 연동이 없습니다.\nClaude 대화창에서 "${title}의 핵심 개념과 철학적 의의를 설명해줘"라고 질문해보세요.`);
+}
+function askConcept(title, concept) {
+  alert(`브라우저 환경에서는 Claude 연동이 없습니다.\nClaude 대화창에서 "${title}에서 ${concept}란 무엇인가요?"라고 질문해보세요.`);
+}
+
+function injectTaegukSvg() {
+  const area = document.getElementById('diagram-svg');
+  if (!area) return;
+  area.innerHTML = `<svg width="100%" viewBox="0 0 680 820" xmlns="http://www.w3.org/2000/svg" style="font-family:'Noto Sans KR',sans-serif">
+<defs>
+  <marker id="aw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="as" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<circle cx="340" cy="46" r="22" fill="none" stroke="#C4BFB5" stroke-width="1" stroke-dasharray="4 3"/>
+<text font-size="12" x="340" y="40" text-anchor="middle" dominant-baseline="central" fill="#9A9590">無極</text>
+<text font-size="12" x="222" y="40" text-anchor="end" fill="#5A5751">무극이태극</text>
+<text font-size="12" x="222" y="54" text-anchor="end" fill="#9A9590">無極而太極</text>
+<line x1="228" y1="46" x2="316" y2="46" stroke="#C4BFB5" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="340" y1="70" x2="340" y2="100" stroke="#C4BFB5" stroke-width="1" marker-end="url(#aw)"/>
+
+<g id="tg" style="cursor:pointer" onclick="tgSpin()">
+  <circle cx="340" cy="148" r="38" fill="#F2F0EB" stroke="#C4BFB5" stroke-width="1.5"/>
+  <path d="M340,110 A38,38 0 0,0 340,186 A19,19 0 0,0 340,148 A19,19 0 0,1 340,110 Z" fill="#3C3489" opacity="0.85"/>
+  <path d="M340,110 A38,38 0 0,1 340,186 A19,19 0 0,1 340,148 A19,19 0 0,0 340,110 Z" fill="#EF9F27" opacity="0.9"/>
+  <circle cx="340" cy="129" r="5.5" fill="#EF9F27" opacity="0.9"/>
+  <circle cx="340" cy="167" r="5.5" fill="#3C3489" opacity="0.85"/>
+  <circle cx="340" cy="148" r="38" fill="none" stroke="#1A1916" stroke-width="1" opacity="0.2"/>
+  <text font-size="12" x="340" y="200" text-anchor="middle" fill="#9A9590">太極 (클릭하면 회전)</text>
+</g>
+<text font-size="14" font-weight="500" x="222" y="144" text-anchor="end" fill="#1A1916">태극</text>
+<text font-size="12" x="222" y="158" text-anchor="end" fill="#5A5751">모든 변화의 근원</text>
+<line x1="228" y1="148" x2="300" y2="148" stroke="#C4BFB5" stroke-width="0.5" stroke-dasharray="3 2"/>
+
+<path d="M312 182 Q272 214 242 228" fill="none" stroke="#534AB7" stroke-width="1.2" opacity="0.7" marker-end="url(#as)"/>
+<path d="M368 182 Q408 214 438 228" fill="none" stroke="#BA7517" stroke-width="1.2" opacity="0.8" marker-end="url(#as)"/>
+
+<g class="ds-node" onclick="askConceptDirect('음(陰)')">
+  <rect x="172" y="228" width="120" height="56" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="232" y="252" text-anchor="middle" dominant-baseline="central" fill="#26215C">음 (陰)</text>
+  <text font-size="12" x="232" y="270" text-anchor="middle" dominant-baseline="central" fill="#3C3489">정지 · 수렴 · 어둠</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('양(陽)')">
+  <rect x="388" y="228" width="120" height="56" rx="10" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="448" y="252" text-anchor="middle" dominant-baseline="central" fill="#412402">양 (陽)</text>
+  <text font-size="12" x="448" y="270" text-anchor="middle" dominant-baseline="central" fill="#633806">운동 · 발산 · 밝음</text>
+</g>
+<path d="M294 248 Q340 238 386 248" fill="none" stroke="#C4BFB5" stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#as)"/>
+<path d="M386 264 Q340 274 294 264" fill="none" stroke="#C4BFB5" stroke-width="0.8" stroke-dasharray="3 2" marker-end="url(#as)"/>
+<text font-size="11" x="340" y="245" text-anchor="middle" fill="#9A9590">상호전화</text>
+
+<path d="M232 286 Q160 310 130 336" fill="none" stroke="#534AB7" stroke-width="1" opacity="0.5" marker-end="url(#as)"/>
+<path d="M232 286 Q232 310 232 336" fill="none" stroke="#534AB7" stroke-width="1" opacity="0.5" marker-end="url(#as)"/>
+<path d="M448 286 Q448 310 448 336" fill="none" stroke="#BA7517" stroke-width="1" opacity="0.6" marker-end="url(#as)"/>
+<path d="M448 286 Q520 310 550 336" fill="none" stroke="#BA7517" stroke-width="1" opacity="0.6" marker-end="url(#as)"/>
+
+<g class="ds-node" onclick="askConceptDirect('수(水)')">
+  <rect x="68" y="336" width="96" height="64" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="116" y="358" text-anchor="middle" dominant-baseline="central" fill="#042C53">수 (水)</text>
+  <text font-size="12" x="116" y="376" text-anchor="middle" dominant-baseline="central" fill="#0C447C">겨울 · 북 · 지혜</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('목(木)')">
+  <rect x="176" y="336" width="96" height="64" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="224" y="358" text-anchor="middle" dominant-baseline="central" fill="#173404">목 (木)</text>
+  <text font-size="12" x="224" y="376" text-anchor="middle" dominant-baseline="central" fill="#27500A">봄 · 동 · 인(仁)</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('토(土) 중앙')">
+  <rect x="296" y="326" width="88" height="84" rx="10" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2"/>
+  <text font-size="14" font-weight="500" x="340" y="352" text-anchor="middle" dominant-baseline="central" fill="#2C2C2A">토 (土)</text>
+  <text font-size="12" x="340" y="371" text-anchor="middle" dominant-baseline="central" fill="#444441">중앙 · 신(信)</text>
+  <text font-size="12" x="340" y="388" text-anchor="middle" dominant-baseline="central" fill="#5F5E5A">사계 관통</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('화(火)')">
+  <rect x="408" y="336" width="96" height="64" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="456" y="358" text-anchor="middle" dominant-baseline="central" fill="#4A1B0C">화 (火)</text>
+  <text font-size="12" x="456" y="376" text-anchor="middle" dominant-baseline="central" fill="#712B13">여름 · 남 · 예(禮)</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('금(金)')">
+  <rect x="516" y="336" width="96" height="64" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="564" y="358" text-anchor="middle" dominant-baseline="central" fill="#412402">금 (金)</text>
+  <text font-size="12" x="564" y="376" text-anchor="middle" dominant-baseline="central" fill="#633806">가을 · 서 · 의(義)</text>
+</g>
+
+<path d="M164 368 Q170 352 174 360" fill="none" stroke="#185FA5" stroke-width="0.8" opacity="0.7" marker-end="url(#as)"/>
+<path d="M272 358 Q280 344 296 348" fill="none" stroke="#3B6D11" stroke-width="0.8" opacity="0.7" marker-end="url(#as)"/>
+<path d="M384 354 Q392 342 406 350" fill="none" stroke="#993C1D" stroke-width="0.8" opacity="0.7" marker-end="url(#as)"/>
+<path d="M512 364 Q514 348 518 356" fill="none" stroke="#854F0B" stroke-width="0.8" opacity="0.7" marker-end="url(#as)"/>
+<line x1="296" y1="368" x2="164" y2="368" stroke="#C4BFB5" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.5"/>
+<line x1="296" y1="362" x2="272" y2="362" stroke="#C4BFB5" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.5"/>
+<line x1="384" y1="362" x2="406" y2="362" stroke="#C4BFB5" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.5"/>
+<line x1="384" y1="368" x2="516" y2="368" stroke="#C4BFB5" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.5"/>
+<text font-size="11" x="340" y="422" text-anchor="middle" fill="#9A9590">상생(相生): 수→목→화→금→수  |  토(土)는 모든 행을 매개</text>
+
+<path d="M296 414 Q258 448 228 462" fill="none" stroke="#C4BFB5" stroke-width="1" opacity="0.45" marker-end="url(#as)"/>
+<path d="M384 414 Q422 448 452 462" fill="none" stroke="#C4BFB5" stroke-width="1" opacity="0.45" marker-end="url(#as)"/>
+
+<g class="ds-node" onclick="askConceptDirect('건도성남(乾道成男)')">
+  <rect x="142" y="462" width="170" height="56" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text font-size="14" font-weight="500" x="227" y="486" text-anchor="middle" dominant-baseline="central" fill="#26215C">건도성남 乾道成男</text>
+  <text font-size="12" x="227" y="504" text-anchor="middle" dominant-baseline="central" fill="#3C3489">양의 원리 → 남성성</text>
+</g>
+<g class="ds-node" onclick="askConceptDirect('곤도성녀(坤道成女)')">
+  <rect x="368" y="462" width="170" height="56" rx="10" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+  <text font-size="14" font-weight="500" x="453" y="486" text-anchor="middle" dominant-baseline="central" fill="#4B1528">곤도성녀 坤道成女</text>
+  <text font-size="12" x="453" y="504" text-anchor="middle" dominant-baseline="central" fill="#72243E">음의 원리 → 여성성</text>
+</g>
+
+<path d="M227 520 Q278 548 318 560" fill="none" stroke="#534AB7" stroke-width="1" opacity="0.45" marker-end="url(#as)"/>
+<path d="M453 520 Q402 548 362 560" fill="none" stroke="#993556" stroke-width="1" opacity="0.45" marker-end="url(#as)"/>
+
+<g class="ds-node" onclick="askConceptDirect('만물화생(萬物化生)')">
+  <rect x="172" y="558" width="336" height="68" rx="12" fill="#F2F0EB" stroke="#C4BFB5" stroke-width="1"/>
+  <text font-size="14" font-weight="500" x="340" y="582" text-anchor="middle" dominant-baseline="central" fill="#1A1916">만물화생 (萬物化生)</text>
+  <text font-size="12" x="340" y="604" text-anchor="middle" dominant-baseline="central" fill="#5A5751">음양오행의 교감으로 만물이 끊임없이 생성·변화</text>
+</g>
+<line x1="340" y1="628" x2="340" y2="652" stroke="#C4BFB5" stroke-width="1" marker-end="url(#aw)"/>
+
+<g class="ds-node" onclick="askConceptDirect('성인과 인극(人極)')">
+  <rect x="212" y="652" width="256" height="68" rx="12" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+  <text font-size="14" font-weight="500" x="340" y="676" text-anchor="middle" dominant-baseline="central" fill="#04342C">성인 · 인극 (人極)</text>
+  <text font-size="12" x="340" y="698" text-anchor="middle" dominant-baseline="central" fill="#085041">인의예지신(仁義禮智信) — 인간의 도덕 원리</text>
+</g>
+
+<path d="M468 686 Q618 686 618 400 Q618 90 398 58" fill="none" stroke="#C4BFB5" stroke-width="0.8" stroke-dasharray="5 3" opacity="0.45" marker-end="url(#aw)"/>
+<text font-size="11" x="634" y="404" text-anchor="middle" fill="#9A9590" transform="rotate(90 634 404)">순환 · 회귀</text>
+
+<text font-size="11" x="36" y="46"  text-anchor="middle" fill="#9A9590">①</text>
+<text font-size="11" x="36" y="148" text-anchor="middle" fill="#9A9590">②</text>
+<text font-size="11" x="36" y="258" text-anchor="middle" fill="#9A9590">③</text>
+<text font-size="11" x="36" y="368" text-anchor="middle" fill="#9A9590">④</text>
+<text font-size="11" x="36" y="492" text-anchor="middle" fill="#9A9590">⑤</text>
+<text font-size="11" x="36" y="592" text-anchor="middle" fill="#9A9590">⑥</text>
+<text font-size="11" x="36" y="686" text-anchor="middle" fill="#9A9590">⑦</text>
+</svg>`;
+}
+
+function tgSpin() {
+  const g = document.getElementById('tg');
+  if (!g) return;
+  g.classList.remove('spinning');
+  void g.offsetWidth;
+  g.classList.add('spinning');
+  setTimeout(() => g.classList.remove('spinning'), 2100);
+}
+
+function askConceptDirect(concept) {
+  const tip = document.createElement('div');
+  tip.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:#1A1916;color:white;padding:10px 18px;border-radius:10px;font-size:13px;
+    font-family:'Noto Sans KR',sans-serif;z-index:9999;max-width:90%;text-align:center;
+    animation:fadeup .3s ease`;
+  tip.textContent = `💬 Claude에게 "${concept}"에 대해 질문해보세요`;
+  document.body.appendChild(tip);
+  setTimeout(() => tip.remove(), 3000);
+}
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes tgspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .spinning{transform-origin:340px 148px;animation:tgspin 2s ease-in-out forwards}
+  @keyframes fadeup{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+`;
+document.head.appendChild(style);
+
+render();
+</script>
+</body>
+</html>
